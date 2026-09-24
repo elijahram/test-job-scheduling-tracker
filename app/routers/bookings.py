@@ -4,7 +4,7 @@ from app.dependencies import get_db
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-from app.scheduler import has_conflict
+from app.scheduling import has_conflict
 
 router = APIRouter(prefix="/bookings", tags=["bookings"])
 
