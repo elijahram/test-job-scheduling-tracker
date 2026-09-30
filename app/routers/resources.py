@@ -16,7 +16,7 @@ def get_resources(
     return resources
 
 
-@router.post("/", response_model=ResourceOut)
+@router.post("/", response_model=ResourceOut, status_code=201)
 def create_resource(
     resource: ResourceCreate,
     db: Session = Depends(get_db),

@@ -17,7 +17,7 @@ def get_bookings(
     return bookings
 
 
-@router.post("/", response_model=BookingOut)
+@router.post("/", response_model=BookingOut, status_code=201)
 def create_booking(
     booking: BookingCreate,
     db: Session = Depends(get_db),
