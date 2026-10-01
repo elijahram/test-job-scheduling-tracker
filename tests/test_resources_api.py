@@ -26,25 +26,7 @@ def test_get_resources(client):
     assert data == []
 
 
-def test_create_resource(client):
-    db = TestingSessionLocal()
-    admin_user = User(
-        username="adminuser",
-        email="adminuser@example.com",
-        hashed_password=hash_password("adminpassword"),
-        role="admin",
-    )
-    db.add(admin_user)
-    db.commit()
-    db.close()
-
-    login_response = client.post(
-        "auth/login/", data={"username": "adminuser", "password": "adminpassword"}
-    )
-    assert login_response.status_code == 200
-    token = login_response.json()["access_token"]
-    admin_headers = {"Authorization": f"Bearer {token}"}
-
+def test_create_resource(client, admin_headers):
     resource_data = {"name": "Test Resource", "type": "Test Type"}
     response = client.post(
         "/resources/",
