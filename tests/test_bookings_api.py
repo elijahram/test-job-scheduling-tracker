@@ -1,8 +1,3 @@
-from tests.conftest import TestingSessionLocal
-from app.models import User
-from app.security import hash_password
-
-
 def register_and_login(client, username, email, password):
     client.post(
         "auth/register/",
