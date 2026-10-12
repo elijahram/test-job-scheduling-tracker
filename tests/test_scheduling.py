@@ -1,5 +1,6 @@
-from datetime import datetime
+from datetime import UTC, datetime
 from types import SimpleNamespace
+
 from app.scheduling import has_conflict
 
 
@@ -115,7 +116,6 @@ def test_conflict_with_same_start_and_end_times():
 
 
 def test_conflict_with_naive_and_aware_datetimes():
-    from datetime import timezone
 
     existing_bookings = [
         SimpleNamespace(
@@ -123,6 +123,6 @@ def test_conflict_with_naive_and_aware_datetimes():
             end_time=datetime(2026, 9, 24, 10, 0),  # naive datetime
         )
     ]
-    new_start = datetime(2026, 9, 24, 9, 30, tzinfo=timezone.utc)
-    new_end = datetime(2026, 9, 24, 10, 30, tzinfo=timezone.utc)
+    new_start = datetime(2026, 9, 24, 9, 30, tzinfo=UTC)
+    new_end = datetime(2026, 9, 24, 10, 30, tzinfo=UTC)
     assert has_conflict(new_start, new_end, existing_bookings) is True

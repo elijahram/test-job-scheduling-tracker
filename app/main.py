@@ -1,7 +1,9 @@
-from fastapi import FastAPI
-from app.routers import resources, bookings, auth
-from app.database import Base, engine
 from contextlib import asynccontextmanager
+
+from fastapi import FastAPI
+
+from app.database import Base, engine
+from app.routers import auth, bookings, resources
 
 
 @asynccontextmanager

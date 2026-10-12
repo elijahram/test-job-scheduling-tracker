@@ -1,17 +1,21 @@
-from app.models import Booking, Resource, User
-from app.schemas import BookingCreate, BookingOut
-from app.dependencies import get_db, get_current_user
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session
+
+from app.dependencies import get_current_user, get_db
+from app.models import Booking, Resource, User
 from app.scheduling import has_conflict
+from app.schemas import BookingCreate, BookingOut
 
 router = APIRouter(prefix="/bookings", tags=["bookings"])
 
 
 @router.get("/", response_model=list[BookingOut])
 def get_bookings(
-    db: Session = Depends(get_db), current_user: User = Depends(get_current_user)
+    db: Annotated[Session, Depends(get_db)],
+    current_user: Annotated[User, Depends(get_current_user)],
 ):
     bookings = db.query(Booking).all()
     return bookings
@@ -20,8 +24,8 @@ def get_bookings(
 @router.post("/", response_model=BookingOut, status_code=201)
 def create_booking(
     booking: BookingCreate,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    db: Annotated[Session, Depends(get_db)],
+    current_user: Annotated[User, Depends(get_current_user)],
 ):
     if booking.end_time <= booking.start_time:
         raise HTTPException(

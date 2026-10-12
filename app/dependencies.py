@@ -1,10 +1,13 @@
+from typing import Annotated
+
+import jwt
+from fastapi import Depends, HTTPException
+from fastapi.security import OAuth2PasswordBearer
+from sqlalchemy.orm import Session
+
 from app.database import SessionLocal
 from app.models import User
-from app.security import SECRET_KEY, ALGORITHM
-from fastapi.security import OAuth2PasswordBearer
-from fastapi import Depends, HTTPException
-from sqlalchemy.orm import Session
-import jwt
+from app.security import ALGORITHM, SECRET_KEY
 
 
 def get_db():
@@ -19,7 +22,8 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
 def get_current_user(
-    token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
+    token: Annotated[str, Depends(oauth2_scheme)],
+    db: Annotated[Session, Depends(get_db)],
 ):
     credentials_exception = HTTPException(
         status_code=401,
@@ -40,7 +44,7 @@ def get_current_user(
 
 
 def require_role(*allowed_roles: str):
-    def role_checker(current_user: User = Depends(get_current_user)):
+    def role_checker(current_user: Annotated[User, Depends(get_current_user)]):
         if current_user.role not in allowed_roles:
             raise HTTPException(
                 status_code=403,
